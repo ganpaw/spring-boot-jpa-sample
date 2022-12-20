@@ -18,7 +18,7 @@ public class SpringBootJpaSampleApplication {
         SpringApplication.run(SpringBootJpaSampleApplication.class, args);
     }
 
-    @Bean
+ /*   @Bean
     public CommandLineRunner demo(CustomerRepository repository) {
         return (args) -> {
             // save a few customers
@@ -54,5 +54,5 @@ public class SpringBootJpaSampleApplication {
             // }
             log.info("");
         };
-    }
+    }*/
 }

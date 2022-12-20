@@ -1,6 +1,7 @@
 package com.spring.jpa.springbootjpasample.advice;
 
 import com.spring.jpa.springbootjpasample.exception.CaughtCustomException;
+import com.spring.jpa.springbootjpasample.exception.ResourceNotFoundException;
 import com.spring.jpa.springbootjpasample.model.Failure;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,10 @@ public class ProductControllerAdvice {
     }
 
 
-    // Try to uncomment below to see resource not found custom error json message along with http status code. It will override default ResponseStatus annotation.
-  /*  @ExceptionHandler(ResourceNotFoundException.class)
+    // Try to comment out below to see default ResourceNotFoundException code and reason.
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Failure> handleResourceNotException(ResourceNotFoundException resourceNotFoundException){
         Failure failure = new Failure(HttpStatus.NOT_FOUND.value(), "Resource was not found on server side.", resourceNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(failure);
-    }*/
+    }
 }

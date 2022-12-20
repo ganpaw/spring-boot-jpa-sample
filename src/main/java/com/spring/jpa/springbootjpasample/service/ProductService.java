@@ -48,7 +48,7 @@ public class ProductService {
     }
 
     // UPDATE
-    public Product updateProduct(Product product) throws Exception {
+    public Product updateProduct(Product product){
         Product updateProduct = getProduct(product.getId());
         updateProduct.setName(product.getName());
         updateProduct.setPrice(product.getPrice());

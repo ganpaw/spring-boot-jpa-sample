@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class Failure {
     private int errorCode;
-    private String message;
+    private String errorDetail;
     private String developerMessage;
 }
