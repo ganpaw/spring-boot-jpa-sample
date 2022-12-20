@@ -1,15 +1,11 @@
 package com.spring.jpa.springbootjpasample.controller;
 
-import com.spring.jpa.springbootjpasample.controller.ProductController;
 import com.spring.jpa.springbootjpasample.exception.ResourceNotFoundException;
 import com.spring.jpa.springbootjpasample.model.Product;
 import com.spring.jpa.springbootjpasample.service.ProductService;
-import org.aspectj.lang.annotation.Before;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,9 +16,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 // Integration testing - testing web controller layer only by mocking service layer
 @WebMvcTest(controllers = ProductController.class)
