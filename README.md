@@ -1,6 +1,6 @@
-## ProductController CRUS requests
+## ProductController CRUD requests
 
-Add Single Product
+Add Product
 ````
 POST http://localhost:8080/jpa/crud/product
 {
@@ -9,7 +9,7 @@ POST http://localhost:8080/jpa/crud/product
     "price": 299.33
 }
 ````
-Add Products:
+Add Products
 ````
 POST http://localhost:8080/jpa/crud/products
 [
@@ -66,5 +66,5 @@ Delete all products
 DELETE http://localhost:8080/jpa/crud/products
 ````
 
-## Handling Exception
+## Exception Handling
 https://stackabuse.com/how-to-return-http-status-codes-in-a-spring-boot-application/
