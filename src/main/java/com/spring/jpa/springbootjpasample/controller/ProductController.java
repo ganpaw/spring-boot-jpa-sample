@@ -1,14 +1,11 @@
 package com.spring.jpa.springbootjpasample.controller;
 
-import com.spring.jpa.springbootjpasample.exception.CaughtCustomException;
-import com.spring.jpa.springbootjpasample.exception.UnCaughtException;
 import com.spring.jpa.springbootjpasample.model.Product;
 import com.spring.jpa.springbootjpasample.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -67,30 +64,5 @@ public class ProductController {
     public ResponseEntity<HttpStatus> removeAllProducts() {
         productService.deleteAllProducts();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping("unavaiable")
-    public ResponseEntity<HttpStatus> unavailableTest() {
-        return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-    }
-
-    @GetMapping("/rse")
-    public String withResponseStatusException() {
-        try {
-            throw new RuntimeException("Error Occurred");
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "HTTP Status will be NOT FOUND (CODE 404)\n");
-        }
-    }
-
-
-    @GetMapping("/caught")
-    public String caughtException() {
-        throw new CaughtCustomException("Caught Exception Thrown");
-    }
-
-    @GetMapping("/uncaught")
-    public String unCaughtException() {
-        throw new UnCaughtException("The HTTP Status will be BAD REQUEST (CODE 400)\n");
     }
 }
