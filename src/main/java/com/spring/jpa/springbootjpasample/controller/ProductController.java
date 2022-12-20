@@ -5,6 +5,7 @@ import com.spring.jpa.springbootjpasample.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping(PRODUCT)
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> addProduct(@RequestBody @Validated Product product) {
         Product addedProduct = productService.saveProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
     }

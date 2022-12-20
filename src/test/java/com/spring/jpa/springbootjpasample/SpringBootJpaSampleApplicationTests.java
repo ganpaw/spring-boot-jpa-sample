@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-// bootstraps entire spring container
+//Integration test - bootstraps entire spring container
 @SpringBootTest
 class SpringBootJpaSampleApplicationTests {
 

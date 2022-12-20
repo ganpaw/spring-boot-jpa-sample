@@ -1,6 +1,7 @@
 package com.spring.jpa.springbootjpasample.controller;
 
 import com.spring.jpa.springbootjpasample.controller.ProductController;
+import com.spring.jpa.springbootjpasample.exception.ResourceNotFoundException;
 import com.spring.jpa.springbootjpasample.model.Product;
 import com.spring.jpa.springbootjpasample.service.ProductService;
 import org.aspectj.lang.annotation.Before;
@@ -34,9 +35,10 @@ public class ProductControllerTest {
     ProductService productService;
 
     private static final String PRODUCT_JSON = "{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 5, \"price\": 999.99}";
+    private static final String ERROR_PRODUCT_JSON = "{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 5 \"price\": 999.99}";
     private static final String PRODUCTS_JSON = "[{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 5, \"price\": 999.99}, {\"id\": 2, \"name\":\"Microsoft XBox\", \"quantity\": 10, \"price\": 399.99}]";
-
     private static final String UPDATE_PRODUCT_JSON = "{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 50, \"price\": 1999.99}";
+    private static final String UPDATE_PRODUCT_NOT_FOUND_JSON = "{\"id\": 3, \"name\":\"Macbook Pro\", \"quantity\": 100, \"price\": 1599.99}";
 
     @BeforeEach
     public void setup(){
@@ -51,14 +53,19 @@ public class ProductControllerTest {
 
         when(productService.getProduct(1)).thenReturn(product1);
         when(productService.getProduct(2)).thenReturn(product2);
+        when(productService.getProduct(3)).thenThrow(new ResourceNotFoundException("product not found"));
 
         when(productService.getProductByName("Macbook Pro")).thenReturn(product1);
         when(productService.getProductByName("Microsoft XBox")).thenReturn(product2);
+        when(productService.getProductByName("unknown")).thenThrow(new ResourceNotFoundException("product not found"));
 
         Product productToUpdate = new Product(1, "Macbook Pro", 50, 1999.99);
         when(productService.updateProduct(productToUpdate)).thenReturn(productToUpdate);
+        Product productToUpdateNotFound = new Product(3, "Macbook Pro", 100, 1599.99); // make sure matched with UPDATE_PRODUCT_NOT_FOUND_JSON
+        when(productService.updateProduct(productToUpdateNotFound)).thenThrow(new ResourceNotFoundException("product to update not found"));
 
         when(productService.deleteProduct(1)).thenReturn(1);
+        when(productService.deleteProduct(3)).thenThrow(new ResourceNotFoundException("product to delete not found"));
 
         doNothing().when(productService).deleteAllProducts();
     }
@@ -74,6 +81,14 @@ public class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(999.99))
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    public void addProductBadRequestTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/jpa/crud/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ERROR_PRODUCT_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -114,6 +129,15 @@ public class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(999.99))
                 .andDo(MockMvcResultHandlers.print());
     }
+    @Test
+    public void getProductNotFoundTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/jpa/crud/product/3"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorDetail").value("Resource was not found on server side"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.developerMessage").value("product not found"))
+                .andDo(MockMvcResultHandlers.print());
+    }
 
     @Test
     public void getProductByNameTest() throws Exception {
@@ -123,6 +147,16 @@ public class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Microsoft XBox"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.quantity").value(10))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(399.99))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void getProductByNameNotFoundTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/jpa/crud/product").queryParam("name", "unknown"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorDetail").value("Resource was not found on server side"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.developerMessage").value("product not found"))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -139,9 +173,30 @@ public class ProductControllerTest {
     }
 
     @Test
+    public void updateProductNotFoundTest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.put("/jpa/crud/product")
+                        .contentType(MediaType.APPLICATION_JSON).content(UPDATE_PRODUCT_NOT_FOUND_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorDetail").value("Resource was not found on server side"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.developerMessage").value("product to update not found"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     public void deleteProductTest() throws Exception{
         mockMvc.perform(MockMvcRequestBuilders.delete("/jpa/crud/product/1"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void deleteProductNotFoundTest() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.delete("/jpa/crud/product/3"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorCode").value(404))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorDetail").value("Resource was not found on server side"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.developerMessage").value("product to delete not found"))
                 .andDo(MockMvcResultHandlers.print());
     }
 

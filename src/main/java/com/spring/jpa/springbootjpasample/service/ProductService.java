@@ -36,6 +36,15 @@ public class ProductService {
         return productRepository.findByName(name).orElseThrow(() -> new ResourceNotFoundException("Product not found for name:" + name));
     }
 
+    // UPDATE
+    public Product updateProduct(Product product){
+        Product updateProduct = getProduct(product.getId());
+        updateProduct.setName(product.getName());
+        updateProduct.setPrice(product.getPrice());
+        updateProduct.setQuantity(product.getQuantity());
+        return productRepository.save(updateProduct);
+    }
+
     // DELETE
     public Integer deleteProduct(int id) {
         Product deleteProduct = getProduct(id);
@@ -46,14 +55,4 @@ public class ProductService {
     public void deleteAllProducts() {
         productRepository.deleteAll();
     }
-
-    // UPDATE
-    public Product updateProduct(Product product){
-        Product updateProduct = getProduct(product.getId());
-        updateProduct.setName(product.getName());
-        updateProduct.setPrice(product.getPrice());
-        updateProduct.setQuantity(product.getQuantity());
-        return productRepository.save(updateProduct);
-    }
-
 }

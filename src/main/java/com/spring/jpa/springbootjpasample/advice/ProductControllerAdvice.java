@@ -15,7 +15,7 @@ public class ProductControllerAdvice {
 
     @ExceptionHandler(CaughtCustomException.class)
     public ResponseEntity<Failure> handleCaughtException(CaughtCustomException caughtCustomException) {
-        Failure failure = new Failure(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server was unable to handler request.", caughtCustomException.getMessage());
+        Failure failure = new Failure(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server was unable to handler request", caughtCustomException.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(failure);
     }
 
@@ -23,7 +23,7 @@ public class ProductControllerAdvice {
     // Try to comment out below to see default ResourceNotFoundException code and reason.
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Failure> handleResourceNotException(ResourceNotFoundException resourceNotFoundException){
-        Failure failure = new Failure(HttpStatus.NOT_FOUND.value(), "Resource was not found on server side.", resourceNotFoundException.getMessage());
+        Failure failure = new Failure(HttpStatus.NOT_FOUND.value(), "Resource was not found on server side", resourceNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(failure);
     }
 }
