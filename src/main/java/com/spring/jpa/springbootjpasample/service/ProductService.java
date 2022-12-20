@@ -3,16 +3,21 @@ package com.spring.jpa.springbootjpasample.service;
 import com.spring.jpa.springbootjpasample.dao.ProductRepository;
 import com.spring.jpa.springbootjpasample.exception.ResourceNotFoundException;
 import com.spring.jpa.springbootjpasample.model.Product;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    // We can either use below constructor (@Autowired not needed after Spring 5) Or use Lomboc's @RequiredArgsConstructor at class level
+    /*ProductService(ProductRepository productRepository){
+        this.productRepository = productRepository;
+    }*/
 
     // CREATE
     public Product saveProduct(Product product) {
@@ -37,7 +42,7 @@ public class ProductService {
     }
 
     // UPDATE
-    public Product updateProduct(Product product){
+    public Product updateProduct(Product product) {
         Product updateProduct = getProduct(product.getId());
         updateProduct.setName(product.getName());
         updateProduct.setPrice(product.getPrice());
