@@ -19,8 +19,6 @@ import static org.mockito.Mockito.*;
  * https://reflectoring.io/unit-testing-spring-boot/
  */
 public class ProductServiceTest {
-    private ProductRepository productRepository;
-
     private ProductService productService;
 
     private Product product1;
@@ -37,7 +35,7 @@ public class ProductServiceTest {
         productToUpdate = new Product(1, "Macbook Pro", 50, 1999.99);
         productToUpdateNotFound = new Product(3, "Macbook Pro", 100, 1599.99);
 
-        productRepository = mock(ProductRepository.class);
+        ProductRepository productRepository = mock(ProductRepository.class);
         productService = new ProductService(productRepository);
 
         when(productRepository.saveAll(products)).thenReturn(products);
@@ -87,9 +85,7 @@ public class ProductServiceTest {
 
     @Test
     public void getProductNotFoundTest() {
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            productService.getProduct(3);
-        });
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> productService.getProduct(3));
     }
 
     @Test
@@ -104,26 +100,22 @@ public class ProductServiceTest {
 
     @Test
     public void getProductByNameNotFoundTest() {
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            productService.getProductByName("unknown");
-        });
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> productService.getProductByName("unknown"));
     }
 
     @Test
     public void updateProductTest() {
-        Product foundProduct = productService.updateProduct(productToUpdate);
-        Assertions.assertNotNull(foundProduct);
-        Assertions.assertEquals(productToUpdate.getId(), foundProduct.getId());
-        Assertions.assertEquals(productToUpdate.getName(), foundProduct.getName());
-        Assertions.assertEquals(productToUpdate.getQuantity(), foundProduct.getQuantity());
-        Assertions.assertEquals(productToUpdate.getPrice(), foundProduct.getPrice());
+        Product updatedProduct = productService.updateProduct(productToUpdate);
+        Assertions.assertNotNull(updatedProduct);
+        Assertions.assertEquals(productToUpdate.getId(), updatedProduct.getId());
+        Assertions.assertEquals(productToUpdate.getName(), updatedProduct.getName());
+        Assertions.assertEquals(productToUpdate.getQuantity(), updatedProduct.getQuantity());
+        Assertions.assertEquals(productToUpdate.getPrice(), updatedProduct.getPrice());
     }
 
     @Test
     public void updateProductNotFoundTest() {
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            productService.updateProduct(productToUpdateNotFound);
-        });
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> productService.updateProduct(productToUpdateNotFound));
     }
 
     @Test
@@ -134,8 +126,6 @@ public class ProductServiceTest {
 
     @Test
     public void deleteProductNotFoundTest() {
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-            productService.deleteProduct(3);
-        });
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> productService.deleteProduct(3));
     }
 }
