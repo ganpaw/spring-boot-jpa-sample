@@ -14,7 +14,10 @@ import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 
-// Unit test - no use of spring. Just Junit, Mockito and Assertions. Requires ProductService constructor injection/autowiring instead of field autowiring
+/**
+ * Unit test - no use of spring. Just Junit, Mockito and Assertions. Requires ProductService constructor injection/autowiring instead of field autowiring
+ * https://reflectoring.io/unit-testing-spring-boot/
+ */
 public class ProductServiceTest {
     private ProductRepository productRepository;
 

@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,21 +24,29 @@ import java.util.stream.Stream;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-// Integration testing using WebMvcTest and MockMvc - testing web controller layer only by mocking service layer
+//
+
+/**
+ * Integration testing using WebMvcTest and MockMvc - testing web controller layer only by mocking service layer
+ * https://reflectoring.io/spring-boot-web-controller-test/
+ */
 @WebMvcTest(controllers = ProductController.class)
 public class ProductControllerTest {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     //private static final String PRODUCT_JSON = "{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 5, \"price\": 999.99}";
     private static final String ERROR_PRODUCT_JSON = "{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 5 \"price\": 999.99}";
+    // Autowire MockMvc to simulate HTTP requests
+    @Autowired
+    MockMvc mockMvc;
     //private static final String PRODUCTS_JSON = "[{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 5, \"price\": 999.99}, {\"id\": 2, \"name\":\"Microsoft XBox\", \"quantity\": 10, \"price\": 399.99}]";
     //private static final String UPDATE_PRODUCT_JSON = "{\"id\": 1, \"name\":\"Macbook Pro\", \"quantity\": 50, \"price\": 1999.99}";
     //private static final String UPDATE_PRODUCT_NOT_FOUND_JSON = "{\"id\": 3, \"name\":\"Macbook Pro\", \"quantity\": 100, \"price\": 1599.99}";
-
-    @Autowired
-    MockMvc mockMvc;
+    //We use @MockBean to mock away the business logic, since we don’t want to test integration between controller and business logic, but between controller and the HTTP layer
+    //@MockBean automatically replaces the bean of the same type in the application context with a Mockito mock
     @MockBean
-    ProductService productService;
+    private ProductService productService;
+    @Autowired
+    private ObjectMapper objectMapper;
     private Product product1;
     private Product product2;
     private List<Product> products;
@@ -97,7 +106,7 @@ public class ProductControllerTest {
 
     @Test
     public void addProductsTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/jpa/crud/products")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/jpa/crud/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(products)))//.content(PRODUCTS_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -107,7 +116,9 @@ public class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Microsoft XBox"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].quantity").value(10))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].price").value(399.99))
-                .andDo(MockMvcResultHandlers.print());
+                .andReturn();
+        // print json output
+        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 
     @Test

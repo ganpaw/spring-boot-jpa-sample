@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
 
     // We can either use below constructor (@Autowired not needed after Spring 5) Or use Lomboc's @RequiredArgsConstructor at class level
-    /*ProductService(ProductRepository productRepository){
+    ProductService(ProductRepository productRepository){
         this.productRepository = productRepository;
-    }*/
+    }
 
     // CREATE
     public Product saveProduct(Product product) {

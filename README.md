@@ -68,3 +68,5 @@ DELETE http://localhost:8080/jpa/crud/products
 
 ## Exception Handling
 https://stackabuse.com/how-to-return-http-status-codes-in-a-spring-boot-application/
+https://reflectoring.io/unit-testing-spring-boot/
+https://www.arhohuttunen.com/spring-boot-unit-testing/
