@@ -3,6 +3,7 @@ package com.spring.jpa.springbootjpasample.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.boot.autoconfigure.cache.CacheType;
 
 import javax.persistence.*;
 
@@ -18,7 +19,9 @@ public class Review {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "book_id", nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	//https://www.concretepage.com/hibernate/example-ondelete-hibernate
+	// https://rogerkeays.com/jpa-cascadetype-remove-vs-hibernate-ondelete
+	//@OnDelete(action = OnDeleteAction.CASCADE) not needed here. Can be used in Book side if we use @OneToMany there
 	@JsonIgnore // needed since we have lazy loading of this field.
 	private Book book;
 
