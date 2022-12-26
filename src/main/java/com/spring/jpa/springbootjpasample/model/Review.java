@@ -17,12 +17,40 @@ public class Review {
 
 	private String comment;
 
+	// The default depends on the cardinality of the relationship.
+	// All to-one relationships use FetchType.EAGER and all to-many relationships FetchType.LAZY.
+	// In below case, we don't want to fetch book as soon as we lookup review. further when we call review.getBook, Hibernate
+	// should do another select to retrieve book. Hence we explicitly used LAZY loading.
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "book_id", nullable = false)
 	//https://www.concretepage.com/hibernate/example-ondelete-hibernate
 	// https://rogerkeays.com/jpa-cascadetype-remove-vs-hibernate-ondelete
-	//@OnDelete(action = OnDeleteAction.CASCADE) not needed here. Can be used in Book side if we use @OneToMany there
-	@JsonIgnore // needed since we have lazy loading of this field.
+	@OnDelete(action = OnDeleteAction.CASCADE)
+
+	@JsonIgnore // to ignore below field since we are using fetch = FetchType.LAZY explicitly
+	/**
+	 * Below response will not contain book
+	 * [
+	 *     {
+	 *         "id": 1,
+	 *         "comment": "A great java book",
+	 *     }
+	 * ]
+	 * If we don't provide @JsonIgnore along with Lazy. On "return new ResponseEntity<>(reviews, HttpStatus.OK);"
+	 * we will get below since Book instance is empty/null.
+	 * {
+	 *     "timestamp": "2022-12-26T02:12:15.595+00:00",
+	 *     "status": 500,
+	 *     "error": "Internal Server Error",
+	 *     "message": "Type definition error: [simple type, class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor];
+	 *     nested exception is com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class
+	 *     org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer
+	 *     (to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS)
+	 *     (through reference chain: java.util.ArrayList[0]->com.spring.jpa.springbootjpasample.model.Review[\"book\"]->com.spring.jpa.springbootjpasample.model.Book$HibernateProxy$VyEXFzhj[\"hibernateLazyInitializer\"])",
+	 *     "path": "/api/books/1/reviews"
+	 * }
+	 */
+
 	private Book book;
 
 	public Long getId() {

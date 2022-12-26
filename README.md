@@ -66,7 +66,7 @@ Delete all products
 DELETE http://localhost:8080/jpa/crud/products
 ````
 
-## ManyToOne (Book 1 -- * Review)
+## ManyToOne Unidirectional (Book 1 -- * Review) - BookController and ReviewController
 A Book record can exist without reviews but if a Review record exist, it is always linked to a book.
 
 
@@ -248,3 +248,6 @@ Status: 204
 * https://reflectoring.io/unit-testing-spring-boot/
 * https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing
 * https://www.arhohuttunen.com/spring-boot-unit-testing/
+
+## References
+https://thorben-janssen.com/entity-mappings-introduction-jpa-fetchtypes/

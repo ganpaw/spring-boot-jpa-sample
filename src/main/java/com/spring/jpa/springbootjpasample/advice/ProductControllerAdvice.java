@@ -15,7 +15,7 @@ public class ProductControllerAdvice {
 
     @ExceptionHandler(CaughtCustomException.class)
     public ResponseEntity<Failure> handleCaughtException(CaughtCustomException caughtCustomException) {
-        Failure failure = new Failure(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server was unable to handler request", caughtCustomException.getMessage());
+        Failure failure = new Failure(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server was unable to handle request", caughtCustomException.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(failure);
     }
 
